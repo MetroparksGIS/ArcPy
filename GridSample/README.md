@@ -8,7 +8,7 @@ To explore the sample data, add the *Grid* feature class to your map. Use an SQL
 *UniqueID IN (SELECT UniqueID FROM CompletedTreatments WHERE Year = '2020')* will show you all grid cells which have related records in the *CompletedTreatments* table and whose records contain 2020 in the *Year* field.
 
 **Adding the Tool**  
-Instructions on how to add script tools in ArcGIS Pro can be found [here](https://pro.arcgis.com/en/pro-app/latest/arcpy/geoprocessing_and_python/adding-a-script-tool.htm). This tool doesn't use parameters.
+Instructions on how to add script tools in ArcGIS Pro can be found [here](https://pro.arcgis.com/en/pro-app/latest/arcpy/geoprocessing_and_python/adding-a-script-tool.htm). This tool doesn't use parameters. All Python packages needed for this script are part of ArcGIS Pro's native Conda environment.
 
 **Add/Remove Treatments**  
 To add or remove treatments, add the *Grid* feature class and both tables (*CompletedTreatments* and *PlannedTreatments*) to your map. Symbolize the *Grid* layer as hollow with a black border. In order to easily track entries, copy the *Grid* layer twice. If adding entries for 2021 (for example), use an SQL definition query on the first copied layer to show all grid cells with related records in the *CompletedTreatments* table for 2021, and symbolize these grid cells with a unique color. Do the same with the second copied *Grid* layer for *PlannedTreatments* and symbolize with a second color. Make the original *Grid* layer the only selectable layer.
