@@ -20,4 +20,4 @@ Run the script tool to open the tkinter window. (I may add more details on how t
 ***Disclaimer***  
 I'm sure there are many things that can be updated/improved with this script to improve readability and make it more pythonic. (For instance, it uses the much hated global variable.) This script was designed for use by one individual to make their life easier, and it currently does that. Improvements will be made as needed.
 
-Also, this script could be much simpler using *arcpy.da.Editor*, but I wanted to be able to undo/redo commands and see edits in real time in the map; but with editor the edits don't commit until you run *stopEditing(True)*. (At least from all the testing I did, *stopOperation()* doesn't appear to commit the edits.
+Also, this script could be much simpler using *arcpy.da.Editor*, but I wanted to be able to undo/redo commands and see edits in real time in the map view; but with editor the edits don't commit until you run *stopEditing(True)*. (At least from all the testing I did, *stopOperation()* doesn't appear to commit the edits.
