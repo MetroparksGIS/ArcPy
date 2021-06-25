@@ -13,4 +13,4 @@ To add or remove treatments, add the *Grid* feature class and both tables (*Comp
 Run the script tool to open the tkinter window. (I may add more details on how to use the tool and how the tool works later. It's mostly straight forward though.)
 
 ***Disclaimer***  
-I'm sure there are many things that can be updated/improved with this script to improve readability and make it more pythonic. This script was designed for use by one individual to make their life easier, and it currently does that. Improvements will be made as needed.
+I'm sure there are many things that can be updated/improved with this script to improve readability and make it more pythonic. (For instance, it uses the much hated global variable.) This script was designed for use by one individual to make their life easier, and it currently does that. Improvements will be made as needed.
