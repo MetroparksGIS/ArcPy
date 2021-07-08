@@ -1,4 +1,4 @@
-**Grid Tracking Tool v6.0**  
+**Grid Tracking Tool v6.1**  
 Designed for ArcGIS Pro and Python 3
 
 The following directory contains sample data and the script used to track natural resource treatments using a polygon grid and related tables.
