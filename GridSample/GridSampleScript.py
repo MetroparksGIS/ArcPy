@@ -1,5 +1,7 @@
-__version__ = '6.0'
+__version__ = '6.1'
 __pythonVersion__ = '3.0'
+__maintainer__ = 'Joshua Brenwell'
+__email__ = 'joshua.brenwell@metroparkstoledo.com'
 
 # Natural Resources Treatment Grid input tool. Allows the user to select grid cells and automatically
 # add the selected treatment as a related record for all selected grid cells. The user can also select
@@ -17,9 +19,10 @@ import os
 # Set the active project to the current aprx open (used in the Refresh() function to refresh the map view).
 aprx = arcpy.mp.ArcGISProject('current')
 
-# Identify the polygon grid to be used and get the path. This must be a layer in the ArcGIS Pro document.
-gridLayer = 'Grid'
+# Identify the polygon grid to be used, get the path, and set a describe variable. This must be a layer in the ArcGIS Pro document.
+gridLayer = 'NR_Grid'
 gridsource = str(os.path.join(arcpy.Describe(gridLayer).path, os.path.basename(gridLayer))).replace('\\','/')
+desc = arcpy.Describe(gridLayer)
 
 # Identify the primary key field.
 primaryKey = 'UniqueID'
@@ -38,10 +41,7 @@ uniqueTrack = []
 entryTrack = []
 
 # Get a count of how many cells are in the polygon grid.
-allCells = 0
-with arcpy.da.SearchCursor(gridsource,primaryKey) as cursor:
-    for row in cursor:
-        allCells += 1
+allCells = int(str(arcpy.GetCount_management(gridsource)))
 
 # Set dropdown box options.
 gridType = ['Completed','Planned']
@@ -56,10 +56,10 @@ def refresh():
     # it isn't noticeable, but still causes the map view to refresh.
     mv = aprx.activeView
     ext = mv.camera.getExtent()
-    ext.XMin = ext.XMin + 0.00001
-    ext.YMin = ext.YMin + 0.00001
-    ext.XMax = ext.XMax - 0.00001
-    ext.YMax = ext.YMax - 0.00001
+    ext.XMin = ext.XMin + 0.1
+    ext.YMin = ext.YMin + 0.1
+    ext.XMax = ext.XMax - 0.1
+    ext.YMax = ext.YMax - 0.1
     mv.camera.setExtent(ext)
 
 # Function to keep tracking up-to-date.
@@ -103,23 +103,26 @@ def saveEdits():
 def getUnique():
     global unique
     
-    # Get a count of how many cells are selected.
-    selectedCells = 0
-    with arcpy.da.SearchCursor(gridLayer,primaryKey) as cursor:
-        for row in cursor:
-            selectedCells += 1
+    # Get a count of how many cells are selected using the gridLayer describe variable.
+    selectedCells = len(desc.FIDSet.split(';'))
+    arcpy.AddMessage(desc.FIDSet.split(';'))
+    arcpy.AddMessage('{} cell(s) selected'.format(selectedCells))
 
-    # Check if any cells are selected. Function will fail if all cells are selected or if no cells are selected.
+    # If all cells are selected, raise an error.
     if allCells == selectedCells:
         messagebox.showinfo('Error', 'Too many cells selected.')
-        return
-    elif selectedCells == 0:
+        return False
+
+    # If the length of selectedCells is equal to 0 or desc.FIDSet contains no FID's, raise an error.
+    if selectedCells == 0 or desc.FIDSet.split(';') == ['']:
         messagebox.showinfo('Error', 'No cells selected.')
-        return
+        return False
 
     # Populate a list with the UniqueID's of all polygons which are selected.
-    unique = list(dict.fromkeys([i for i, in arcpy.da.SearchCursor(gridLayer,primaryKey) if i is not None]))
+    unique = [i for i, in arcpy.da.SearchCursor(gridLayer,primaryKey) if i is not None]
     unique = [str(i) for i in unique]
+
+    return True
     
 # Function to check inputs and add rows for each polygon into the table.
 def verifyEntry():
@@ -128,7 +131,11 @@ def verifyEntry():
     global position
 
     # Run function to get unique values.
-    getUnique()
+    checks = getUnique()
+
+    # End function if errors called in getUnique() function.
+    if not checks:
+        return
 
     # Get the values entered.
     gridIs = cb_grid.get()
@@ -303,7 +310,7 @@ def about():
                         'Natural Resources Grid Input Tool v6.0 \n'\
                         'Designed for ArcGIS Pro and Python Version 3 \n'\
                         '\n'\
-                        'For help, contact: ...')
+                        'For help, contact: joshua.brenwell@metroparkstoledo.com')
 
 # Function to create a scrollable pop-up window that lists all records for selected grid cells.
 def getRecords():
@@ -411,7 +418,7 @@ def getRecords():
 
 # Create the visual representation of the tool.
 root = Tk()
-root.title('NR Grid Input Tool v6.0')
+root.title('NR Grid Input Tool v6.1')
 root.geometry('293x290')
 root.resizable(0,0)
 
